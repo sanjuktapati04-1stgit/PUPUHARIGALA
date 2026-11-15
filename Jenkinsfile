@@ -23,7 +23,6 @@ pipeline {
                     test -f test.html
                     mkdir -p build/site
                     cp test.html build/site/test.html
-                    cp test.html build/site/index.html
                     tar -czf build/site.tar.gz -C build/site .
                 '''
             }
