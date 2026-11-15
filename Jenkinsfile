@@ -7,9 +7,14 @@ pipeline {
 
     parameters {
         string(
-            name: 'DEPLOY_DIR',
-            defaultValue: 'build/deployed-site',
-            description: 'Directory on the Jenkins agent where the website should be deployed'
+            name: 'TOMCAT_CONTAINER',
+            defaultValue: 'jenkins_tomcat1',
+            description: 'Name of the running Podman Tomcat container'
+        )
+        string(
+            name: 'TOMCAT_WEB_ROOT',
+            defaultValue: '/usr/local/tomcat/webapps/ROOT',
+            description: 'Tomcat web root in the container (set to the mounted mnt path if different)'
         )
     }
 
@@ -54,15 +59,13 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                script {
-                    if (params.DEPLOY_DIR == null || params.DEPLOY_DIR.trim().isEmpty()) {
-                        error('Set the DEPLOY_DIR build parameter to the website deployment directory.')
-                    }
-                }
                 sh '''
                     set -eu
-                    mkdir -p "$DEPLOY_DIR"
-                    cp -R build/extracted/. "$DEPLOY_DIR"/
+                    test -n "$TOMCAT_CONTAINER"
+                    test -n "$TOMCAT_WEB_ROOT"
+                    podman container exists "$TOMCAT_CONTAINER"
+                    podman exec "$TOMCAT_CONTAINER" mkdir -p "$TOMCAT_WEB_ROOT"
+                    podman cp build/extracted/. "$TOMCAT_CONTAINER:$TOMCAT_WEB_ROOT/"
                 '''
             }
         }
