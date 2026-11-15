@@ -48,10 +48,18 @@ pipeline {
             }
         }
         stage('Validate') {
-             parallel {
-                stage('File exists') { steps { sh 'test -f test.html' } }
-                stage('Has heading') { steps { sh 'grep -q "<h1>" test.html' } }
-      }
+            parallel {
+                stage('File exists') {
+                    steps {
+                        sh 'test -f build/extracted/test.html'
+                    }
+                }
+                stage('Has heading') {
+                    steps {
+                        sh "grep -Eq '<h1([[:space:]>])' build/extracted/test.html"
+                    }
+                }
+            }
         }
         stage('Deploy') {
             steps {
