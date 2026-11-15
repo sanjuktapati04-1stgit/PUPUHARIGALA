@@ -5,17 +5,9 @@ pipeline {
         skipDefaultCheckout(true)
     }
 
-    parameters {
-        string(
-            name: 'TOMCAT_CONTAINER',
-            defaultValue: 'jenkins_tomcat1',
-            description: 'Name of the running Podman Tomcat container'
-        )
-        string(
-            name: 'TOMCAT_WEB_ROOT',
-            defaultValue: '/usr/local/tomcat/webapps/ROOT',
-            description: 'Tomcat web root in the container (set to the mounted mnt path if different)'
-        )
+    environment {
+        TOMCAT_CONTAINER = 'jenkins_tomcat1'
+        TOMCAT_WEB_ROOT = '/usr/local/tomcat/webapps/ROOT'
     }
 
     stages {
