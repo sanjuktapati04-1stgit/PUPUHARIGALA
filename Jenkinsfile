@@ -47,7 +47,12 @@ pipeline {
                 '''
             }
         }
-
+        stage('Validate') {
+             parallel {
+                stage('File exists') { steps { sh 'test -f test.html' } }
+                stage('Has heading') { steps { sh 'grep -q "<h1>" test.html' } }
+      }
+        }
         stage('Deploy') {
             steps {
                 sh '''
