@@ -8,7 +8,9 @@ pipeline {
     environment {
         TOMCAT_WEB_ROOT = '/mnt/tomcat/webapps/ROOT'
     }
-
+    parameters {
+        booleanParam(name: 'RUN_DEPLOY', defaultValue: false, description: 'Run deploy stage')
+    }
     stages {
         stage('Clone') {
             steps {
@@ -61,7 +63,9 @@ pipeline {
                 }
             }
         }
+
         stage('Deploy') {
+            when { allOf { branch 'main'; expression { parameters.RUN_DEPLOY } } }
             steps {
                 sh '''
                     set -eu
@@ -76,6 +80,7 @@ pipeline {
                 '''
             }
         }
+        
     }
      post {
     success { archiveArtifacts artifacts: 'build/*.tar.gz' }
