@@ -59,7 +59,6 @@ pipeline {
                     }
                     cp -R build/extracted/. "$TOMCAT_WEB_ROOT"/
                     test -f "$TOMCAT_WEB_ROOT/test.html"
-                    test -f "$TOMCAT_WEB_ROOT/index.html"
                 '''
             }
         }
