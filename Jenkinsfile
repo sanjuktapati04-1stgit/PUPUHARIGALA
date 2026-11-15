@@ -6,8 +6,7 @@ pipeline {
     }
 
     environment {
-        TOMCAT_CONTAINER = 'jenkins_tomcat1'
-        TOMCAT_WEB_ROOT = '/usr/local/tomcat/webapps/ROOT'
+        TOMCAT_WEB_ROOT = '/mnt/tomcat/webapps/ROOT'
     }
 
     stages {
@@ -53,11 +52,12 @@ pipeline {
             steps {
                 sh '''
                     set -eu
-                    test -n "$TOMCAT_CONTAINER"
                     test -n "$TOMCAT_WEB_ROOT"
-                    podman container exists "$TOMCAT_CONTAINER"
-                    podman exec "$TOMCAT_CONTAINER" mkdir -p "$TOMCAT_WEB_ROOT"
-                    podman cp build/extracted/. "$TOMCAT_CONTAINER:$TOMCAT_WEB_ROOT/"
+                    test -d "$TOMCAT_WEB_ROOT" || {
+                        echo "Tomcat shared mount is not available at $TOMCAT_WEB_ROOT" >&2
+                        exit 1
+                    }
+                    cp -R build/extracted/. "$TOMCAT_WEB_ROOT"/
                 '''
             }
         }
