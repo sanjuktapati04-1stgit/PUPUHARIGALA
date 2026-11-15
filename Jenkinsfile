@@ -1,10 +1,14 @@
 pipeline {
     agent any
 
+    options {
+        skipDefaultCheckout(true)
+    }
+
     parameters {
         string(
             name: 'DEPLOY_DIR',
-            defaultValue: '',
+            defaultValue: 'build/deployed-site',
             description: 'Directory on the Jenkins agent where the website should be deployed'
         )
     }
