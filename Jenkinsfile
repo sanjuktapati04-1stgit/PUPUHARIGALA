@@ -22,6 +22,7 @@ pipeline {
                     set -eu
                     test -f test.html
                     mkdir -p build/site
+                    cp test.html build/site/test.html
                     cp test.html build/site/index.html
                     tar -czf build/site.tar.gz -C build/site .
                 '''
@@ -58,6 +59,8 @@ pipeline {
                         exit 1
                     }
                     cp -R build/extracted/. "$TOMCAT_WEB_ROOT"/
+                    test -f "$TOMCAT_WEB_ROOT/test.html"
+                    test -f "$TOMCAT_WEB_ROOT/index.html"
                 '''
             }
         }
