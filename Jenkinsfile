@@ -64,4 +64,9 @@ pipeline {
             }
         }
     }
+     post {
+    success { archiveArtifacts artifacts: '*.tar.gz' }
+    failure { echo 'Build failed' }
+    always  { echo "Result: ${currentBuild.currentResult}" }
+  }
 }
